@@ -1,6 +1,5 @@
-```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -400,58 +399,20 @@
         font-weight: 500;
       }
 
-      /* Mobile */
+      /* Mobile Responsive Styles */
       @media (max-width: 600px) {
-        body {
-          margin: 15px 0;
-        }
-
-        .container {
-          padding: 20px;
-          max-width: 100%;
-          margin: 0 10px;
-        }
-
-        h2 {
-          font-size: 21px;
-        }
-
-        .summary-box {
-          padding: 12px 6px;
-        }
-
-        .sum-item strong {
-          font-size: 10px;
-        }
-
-        .sum-item span {
-          font-size: 20px;
-        }
-
-        .dash-table {
-          font-size: 12px;
-        }
-
-        .dash-table th,
-        .dash-table td {
-          padding: 12px 3px;
-        }
-
-        .col-team {
-          padding-left: 5px !important;
-        }
-
-        .col-percent {
-          padding-right: 5px !important;
-        }
-
-        .banner-actions {
-          width: 100%;
-        }
-
-        .icon-btn {
-          flex: 1;
-        }
+        body { margin: 15px 0; }
+        .container { padding: 20px; max-width: 100%; margin: 0 10px; }
+        h2 { font-size: 21px; }
+        .summary-box { padding: 12px 6px; }
+        .sum-item strong { font-size: 10px; }
+        .sum-item span { font-size: 20px; }
+        .dash-table { font-size: 12px; }
+        .dash-table th, .dash-table td { padding: 12px 3px; }
+        .col-team { padding-left: 5px !important; }
+        .col-percent { padding-right: 5px !important; }
+        .banner-actions { width: 100%; }
+        .icon-btn { flex: 1; }
       }
     </style>
   </head>
@@ -462,32 +423,22 @@
 
       <!-- Login Section -->
       <div id="pinSection">
-
         <h2>System Login</h2>
 
-        <label class="input-label">
-          Enter Secret PIN
-        </label>
-
+        <label class="input-label" for="pinInput">Enter Secret PIN</label>
         <input
           type="password"
           id="pinInput"
           class="md-input"
           placeholder="Enter PIN"
+          onkeydown="if(event.key==='Enter') checkPin()"
         >
 
-        <button
-          class="md-button"
-          onclick="checkPin()"
-        >
+        <button class="md-button" onclick="checkPin()">
           Enter System
         </button>
 
-        <p
-          id="pinMsg"
-          style="color:#d93025;margin-top:16px;font-size:14px;"
-        ></p>
-
+        <p id="pinMsg" style="color:#d93025;margin-top:16px;font-size:14px;"></p>
       </div>
 
 
@@ -499,840 +450,296 @@
 
         <!-- UPDATE BANNER -->
         <div class="update-banner">
-
           <div class="banner-text">
             <span>&#9432;</span>
             Dashboard data updates every day at 4:00 PM.
           </div>
 
           <div class="banner-actions">
-
-            <button
-              class="icon-btn"
-              onclick="refreshDashboard()"
-              title="Refresh Data"
-            >
+            <button class="icon-btn" onclick="refreshDashboard()" title="Refresh Data">
               &#x21bb; Refresh
             </button>
-
-            <button
-              class="icon-btn logout-btn"
-              onclick="logoutSystem()"
-              title="Logout System"
-            >
+            <button class="icon-btn logout-btn" onclick="logoutSystem()" title="Logout System">
               &#x2192; Logout
             </button>
-
           </div>
-
         </div>
-
 
         <div id="dashboardArea">
-          <div class="loading">
-            Loading dashboard metrics...
-          </div>
+          <div class="loading">Loading dashboard metrics...</div>
         </div>
 
-
         <div class="section-divider"></div>
-
 
         <!-- PENDING SURVEY LIST -->
         <h2>Pending Submissions by Team</h2>
 
-        <label class="input-label">
-          Select Team
-        </label>
-
-        <select
-          id="teamSelect"
-          class="md-select"
-        >
-          <option value="">
-            -- Loading Teams... --
-          </option>
+        <label class="input-label" for="teamSelect">Select Team</label>
+        <select id="teamSelect" class="md-select">
+          <option value="">-- Loading Teams... --</option>
         </select>
 
-        <button
-          class="md-button"
-          onclick="fetchTeamSurveys()"
-        >
+        <button class="md-button" onclick="fetchTeamSurveys()">
           View Pending Routes
         </button>
 
-        <div
-          id="teamSurveyArea"
-          class="result-container"
-        ></div>
-
+        <div id="teamSurveyArea" class="result-container"></div>
 
         <div class="section-divider"></div>
-
 
         <!-- ROUTE SEARCH -->
         <h2>Route Search</h2>
 
-        <label class="input-label">
-          Search Route Name
-        </label>
-
+        <label class="input-label" for="searchInput">Search Route Name</label>
         <input
           type="text"
           id="searchInput"
           class="md-input"
           placeholder="e.g. 0001 or BGO0006"
+          onkeydown="if(event.key==='Enter') performSearch()"
         >
 
-        <button
-          class="md-button"
-          onclick="performSearch()"
-        >
+        <button class="md-button" onclick="performSearch()">
           Search
         </button>
 
-        <div
-          id="resultArea"
-          class="result-container"
-        ></div>
+        <div id="resultArea" class="result-container"></div>
 
       </div>
 
-
       <!-- Footer -->
       <div class="app-footer">
-
-        Developed and Designed by
-        <span>Ye Lin Aung</span>
-
-        <br>
-
+        Developed and Designed by <span>Ye Lin Aung</span><br>
         WBG NIMS &copy; 2026
-
       </div>
 
     </div>
 
-
-    <!-- =====================================================
-         API CONNECTION
-         ===================================================== -->
-
+    <!-- API CONNECTION SCRIPT -->
     <script>
+      // Updated active Google Apps Script Web App Endpoint
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyMVf9mkE92mpJDJfL9sC91wxUF6PSE_w2dbHORxmdA9kt98GyyHgm_LDhKsKTjtGQUyA/exec";
 
-      /*
-       * YOUR GOOGLE APPS SCRIPT WEB APP URL
-       *
-       * GitHub Pages
-       *       ↓
-       * Apps Script
-       *       ↓
-       * Google Sheet
-       */
-
-      const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbxv19f9pM0DMh8cnh44YCBoWHdD-xu91OuJM6Cpkpua9PKMvPeUk8eCIeTt7fkaYEAvIQ/exec";
-
-
-      // =====================================================
-      // GET API
-      // =====================================================
+      // Auto-check session state on page load
+      window.addEventListener("DOMContentLoaded", function() {
+        if (localStorage.getItem("wbg_nims_authenticated") === "true") {
+          document.getElementById("pinSection").classList.add("hidden");
+          document.getElementById("mainAppSection").classList.remove("hidden");
+          loadDashboard();
+        }
+      });
 
       async function apiGet(params) {
-
         const url = new URL(SCRIPT_URL);
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 
-        Object.keys(params).forEach(function(key) {
-
-          url.searchParams.append(
-            key,
-            params[key]
-          );
-
-        });
-
-        const response =
-          await fetch(url.toString(), {
-            method: "GET"
-          });
-
-        if (!response.ok) {
-          throw new Error(
-            "HTTP error: " + response.status
-          );
-        }
-
+        const response = await fetch(url.toString(), { method: "GET" });
+        if (!response.ok) throw new Error("HTTP error: " + response.status);
         return await response.json();
       }
-
-
-      // =====================================================
-      // POST API
-      // =====================================================
 
       async function apiPost(data) {
-
-        const response =
-          await fetch(SCRIPT_URL, {
-            method: "POST",
-            body: JSON.stringify(data)
-          });
-
-        if (!response.ok) {
-          throw new Error(
-            "HTTP error: " + response.status
-          );
-        }
-
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error("HTTP error: " + response.status);
         return await response.json();
       }
 
-
-      // =====================================================
-      // LOGIN
-      // =====================================================
-
       async function checkPin() {
+        const pinInput = document.getElementById("pinInput");
+        const pinMsg = document.getElementById("pinMsg");
+        const pin = pinInput.value.trim();
 
-        var pin =
-          document.getElementById("pinInput").value;
-
-        var pinMsg =
-          document.getElementById("pinMsg");
-
-        if (pin.trim() === "") {
-
-          pinMsg.innerHTML =
-            "Please enter your PIN.";
-
+        if (!pin) {
+          pinMsg.innerHTML = "Please enter your PIN.";
           return;
         }
 
-        pinMsg.innerHTML =
-          "Authenticating...";
+        pinMsg.innerHTML = "Authenticating...";
 
         try {
-
-          const response =
-            await apiPost({
-              action: "verifyPin",
-              pin: pin
-            });
+          const response = await apiPost({ action: "verifyPin", pin: pin });
 
           if (response.success) {
-
-            document
-              .getElementById("pinSection")
-              .classList.add("hidden");
-
-            document
-              .getElementById("mainAppSection")
-              .classList.remove("hidden");
-
+            localStorage.setItem("wbg_nims_authenticated", "true");
+            document.getElementById("pinSection").classList.add("hidden");
+            document.getElementById("mainAppSection").classList.remove("hidden");
             loadDashboard();
-
           } else {
-
-            pinMsg.innerHTML =
-              "Incorrect PIN!";
+            pinMsg.innerHTML = "Incorrect PIN!";
           }
-
         } catch (error) {
-
           console.error(error);
-
-          pinMsg.innerHTML =
-            "Connection error. Please try again.";
+          pinMsg.innerHTML = "Connection error. Please try again.";
         }
       }
 
-
-      // =====================================================
-      // LOGOUT
-      // =====================================================
-
       function logoutSystem() {
-
-        document
-          .getElementById("mainAppSection")
-          .classList.add("hidden");
-
-        document
-          .getElementById("pinSection")
-          .classList.remove("hidden");
-
-        document
-          .getElementById("pinInput")
-          .value = "";
-
-        document
-          .getElementById("pinMsg")
-          .innerHTML = "";
-
-        document
-          .getElementById("searchInput")
-          .value = "";
-
-        document
-          .getElementById("resultArea")
-          .innerHTML = "";
-
-        document
-          .getElementById("teamSurveyArea")
-          .innerHTML = "";
+        localStorage.removeItem("wbg_nims_authenticated");
+        document.getElementById("mainAppSection").classList.add("hidden");
+        document.getElementById("pinSection").classList.remove("hidden");
+        document.getElementById("pinInput").value = "";
+        document.getElementById("pinMsg").innerHTML = "";
+        document.getElementById("searchInput").value = "";
+        document.getElementById("resultArea").innerHTML = "";
+        document.getElementById("teamSurveyArea").innerHTML = "";
       }
 
-
-      // =====================================================
-      // REFRESH DASHBOARD
-      // =====================================================
-
       function refreshDashboard() {
-
-        document
-          .getElementById("dashboardArea")
-          .innerHTML =
-          "<div class='loading'>" +
-          "Refreshing dashboard data..." +
-          "</div>";
-
+        document.getElementById("dashboardArea").innerHTML = 
+          "<div class='loading'>Refreshing dashboard data...</div>";
         loadDashboard();
       }
 
-
-      // =====================================================
-      // DASHBOARD
-      // =====================================================
-
       async function loadDashboard() {
+        const dashArea = document.getElementById("dashboardArea");
+        const teamDropdown = document.getElementById("teamSelect");
 
         try {
-
-          var response =
-            await apiGet({
-              action: "dashboard"
-            });
-
-          var dashArea =
-            document.getElementById(
-              "dashboardArea"
-            );
-
-          var teamDropdown =
-            document.getElementById(
-              "teamSelect"
-            );
-
+          const response = await apiGet({ action: "dashboard" });
 
           if (response.error) {
-
-            dashArea.innerHTML =
-              "<div class='alert-text'>" +
-              response.error +
-              "</div>";
-
+            dashArea.innerHTML = "<div class='alert-text'>" + response.error + "</div>";
             return;
           }
 
-
           if (response.success) {
+            const sum = response.summary;
 
-            var sum =
-              response.summary;
+            let html = "<div class='summary-box'>";
+            html += "<div class='sum-item'><strong>Total Routes</strong><span>" + sum.total + "</span></div>";
+            html += "<div class='sum-item'><strong>Done</strong><span class='text-done'>" + sum.done + "</span></div>";
+            html += "<div class='sum-item'><strong>Need to Submit</strong><span class='text-survey'>" + sum.survey + "</span></div>";
+            html += "<div class='sum-item'><strong>Completed</strong><span class='text-blue'>" + sum.percent + "</span></div>";
+            html += "</div>";
 
+            html += "<table class='dash-table'>";
+            html += "<tr><th class='col-team'>Team</th><th class='col-total'>Total</th><th class='col-done'>Done</th><th class='col-submit'>Need to Submit</th><th class='col-percent'>%</th></tr>";
 
-            // Summary
-            var html =
-              "<div class='summary-box'>";
+            const teamNames = Object.keys(response.data).sort();
+            teamDropdown.innerHTML = "<option value=''>-- Choose a Team --</option>";
 
-
-            html +=
-              "<div class='sum-item'>" +
-              "<strong>Total Routes</strong>" +
-              "<span>" +
-              sum.total +
-              "</span>" +
-              "</div>";
-
-
-            html +=
-              "<div class='sum-item'>" +
-              "<strong>Done</strong>" +
-              "<span class='text-done'>" +
-              sum.done +
-              "</span>" +
-              "</div>";
-
-
-            html +=
-              "<div class='sum-item'>" +
-              "<strong>Need to Submit</strong>" +
-              "<span class='text-survey'>" +
-              sum.survey +
-              "</span>" +
-              "</div>";
-
-
-            html +=
-              "<div class='sum-item'>" +
-              "<strong>Completed</strong>" +
-              "<span class='text-blue'>" +
-              sum.percent +
-              "</span>" +
-              "</div>";
-
-
-            html +=
-              "</div>";
-
-
-            // Table
-            html +=
-              "<table class='dash-table'>";
-
-
-            html +=
-              "<tr>" +
-              "<th class='col-team'>Team</th>" +
-              "<th class='col-total'>Total</th>" +
-              "<th class='col-done'>Done</th>" +
-              "<th class='col-submit'>Need to Submit</th>" +
-              "<th class='col-percent'>%</th>" +
-              "</tr>";
-
-
-            var teamNames =
-              Object.keys(response.data);
-
-            teamNames.sort();
-
-
-            teamDropdown.innerHTML =
-              "<option value=''>" +
-              "-- Choose a Team --" +
-              "</option>";
-
-
-            for (
-              var i = 0;
-              i < teamNames.length;
-              i++
-            ) {
-
-              var team =
-                teamNames[i];
-
-              var teamData =
-                response.data[team];
-
-              var teamPercentStr =
-                teamData.percent;
-
-              var numericPercent =
-                parseFloat(
-                  teamPercentStr
-                ) || 0;
-
+            for (let i = 0; i < teamNames.length; i++) {
+              const team = teamNames[i];
+              const teamData = response.data[team];
+              const teamPercentStr = teamData.percent;
+              const numericPercent = parseFloat(teamPercentStr) || 0;
 
               html += "<tr>";
+              html += "<td class='col-team'>" + team + "</td>";
+              html += "<td class='col-total'>" + teamData.total + "</td>";
+              html += "<td class='col-done text-done'>" + teamData.done + "</td>";
+              html += "<td class='col-submit text-survey'>" + teamData.survey + "</td>";
+              html += "<td class='col-percent'>";
+              html += "<div class='progress-container'>";
+              html += "<div class='progress-text'>" + teamPercentStr + "</div>";
+              html += "<div class='progress-bar-bg'><div class='progress-bar-fill' style='width:" + numericPercent + "%;'></div></div>";
+              html += "</div></td></tr>";
 
-
-              html +=
-                "<td class='col-team'>" +
-                team +
-                "</td>";
-
-
-              html +=
-                "<td class='col-total'>" +
-                teamData.total +
-                "</td>";
-
-
-              html +=
-                "<td class='col-done text-done'>" +
-                teamData.done +
-                "</td>";
-
-
-              html +=
-                "<td class='col-submit text-survey'>" +
-                teamData.survey +
-                "</td>";
-
-
-              html +=
-                "<td class='col-percent'>" +
-
-                "<div class='progress-container'>" +
-
-                "<div class='progress-text'>" +
-                teamPercentStr +
-                "</div>" +
-
-                "<div class='progress-bar-bg'>" +
-
-                "<div " +
-                "class='progress-bar-fill' " +
-                "style='width:" +
-                numericPercent +
-                "%;'>" +
-                "</div>" +
-
-                "</div>" +
-
-                "</div>" +
-
-                "</td>";
-
-
-              html += "</tr>";
-
-
-              teamDropdown.innerHTML +=
-                "<option value='" +
-                team +
-                "'>" +
-                team +
-                "</option>";
+              teamDropdown.innerHTML += "<option value='" + team + "'>" + team + "</option>";
             }
 
-
-            html +=
-              "</table>";
-
-
-            dashArea.innerHTML =
-              html;
+            html += "</table>";
+            dashArea.innerHTML = html;
           }
-
         } catch (error) {
-
           console.error(error);
-
-          document
-            .getElementById("dashboardArea")
-            .innerHTML =
-            "<div class='alert-text'>" +
-            "Unable to connect to server." +
-            "</div>";
+          dashArea.innerHTML = "<div class='alert-text'>Unable to connect to server.</div>";
         }
       }
-
-
-      // =====================================================
-      // PENDING ROUTES
-      // =====================================================
 
       async function fetchTeamSurveys() {
+        const teamName = document.getElementById("teamSelect").value;
+        const surveyArea = document.getElementById("teamSurveyArea");
 
-        var teamName =
-          document.getElementById(
-            "teamSelect"
-          ).value;
-
-        var surveyArea =
-          document.getElementById(
-            "teamSurveyArea"
-          );
-
-
-        if (teamName === "") {
-
-          surveyArea.innerHTML =
-            "<div class='alert-text'>" +
-            "Please select a team from the dropdown." +
-            "</div>";
-
+        if (!teamName) {
+          surveyArea.innerHTML = "<div class='alert-text'>Please select a team from the dropdown.</div>";
           return;
         }
 
-
-        surveyArea.innerHTML =
-          "<div class='loading'>" +
-          "Fetching pending routes..." +
-          "</div>";
-
+        surveyArea.innerHTML = "<div class='loading'>Fetching pending routes...</div>";
 
         try {
-
-          var response =
-            await apiGet({
-              action: "pending",
-              team: teamName
-            });
-
+          const response = await apiGet({ action: "pending", team: teamName });
 
           if (response.error) {
-
-            surveyArea.innerHTML =
-              "<div class='alert-text'>" +
-              response.error +
-              "</div>";
-
+            surveyArea.innerHTML = "<div class='alert-text'>" + response.error + "</div>";
             return;
           }
-
 
           if (response.success) {
-
-            if (
-              response.routes.length === 0
-            ) {
-
-              surveyArea.innerHTML =
-                "<div class='success-notice'>" +
-                "All caught up! No pending routes for " +
-                teamName +
-                "." +
-                "</div>";
-
+            if (response.routes.length === 0) {
+              surveyArea.innerHTML = "<div class='success-notice'>All caught up! No pending routes for " + teamName + ".</div>";
             } else {
+              let html = "<div class='match-card'>";
+              html += "<div class='route-title'>Pending Routes (" + response.routes.length + ")</div>";
+              html += "<ul class='route-list'>";
 
-              var html =
-                "<div class='match-card'>";
-
-
-              html +=
-                "<div class='route-title'>" +
-                "Pending Routes (" +
-                response.routes.length +
-                ")" +
-                "</div>";
-
-
-              html +=
-                "<ul class='route-list'>";
-
-
-              for (
-                var i = 0;
-                i < response.routes.length;
-                i++
-              ) {
-
-                var route =
-                  response.routes[i];
-
-
-                html +=
-                  "<li>" +
-                  route.route;
-
-
-                if (route.hasSurvey) {
-
-                  html +=
-                    "<span " +
-                    "class='circle-tick' " +
-                    "title='Survey Data is Yes'>" +
-                    "&#10004;" +
-                    "</span>";
-                }
-
-
-                if (route.hasKmz) {
-
-                  html +=
-                    "<span " +
-                    "class='pill-kmz' " +
-                    "title='KMZ Data is Yes'>" +
-                    "KMZ" +
-                    "</span>";
-                }
-
-
-                html +=
-                  "</li>";
+              for (let i = 0; i < response.routes.length; i++) {
+                const route = response.routes[i];
+                html += "<li>" + route.route;
+                if (route.hasSurvey) html += "<span class='circle-tick' title='Survey Data is Yes'>&#10004;</span>";
+                if (route.hasKmz) html += "<span class='pill-kmz' title='KMZ Data is Yes'>KMZ</span>";
+                html += "</li>";
               }
 
-
-              html +=
-                "</ul>" +
-                "</div>";
-
-
-              surveyArea.innerHTML =
-                html;
+              html += "</ul></div>";
+              surveyArea.innerHTML = html;
             }
           }
-
         } catch (error) {
-
           console.error(error);
-
-          surveyArea.innerHTML =
-            "<div class='alert-text'>" +
-            "Unable to connect to server." +
-            "</div>";
+          surveyArea.innerHTML = "<div class='alert-text'>Unable to connect to server.</div>";
         }
       }
 
-
-      // =====================================================
-      // ROUTE SEARCH
-      // =====================================================
-
       async function performSearch() {
+        const searchTerm = document.getElementById("searchInput").value.trim();
+        const resultArea = document.getElementById("resultArea");
 
-        var searchTerm =
-          document.getElementById(
-            "searchInput"
-          ).value;
-
-        var resultArea =
-          document.getElementById(
-            "resultArea"
-          );
-
-
-        if (searchTerm.trim() === "") {
-
-          resultArea.innerHTML =
-            "<div class='alert-text'>" +
-            "Please enter a route name." +
-            "</div>";
-
+        if (!searchTerm) {
+          resultArea.innerHTML = "<div class='alert-text'>Please enter a route name.</div>";
           return;
         }
 
-
-        resultArea.innerHTML =
-          "<div class='loading'>" +
-          "Searching sheet..." +
-          "</div>";
-
+        resultArea.innerHTML = "<div class='loading'>Searching sheet...</div>";
 
         try {
-
-          var response =
-            await apiGet({
-              action: "search",
-              q: searchTerm
-            });
-
+          const response = await apiGet({ action: "search", q: searchTerm });
 
           if (response.error) {
-
-            resultArea.innerHTML =
-              "<div class='alert-text'>" +
-              response.error +
-              "</div>";
-
+            resultArea.innerHTML = "<div class='alert-text'>" + response.error + "</div>";
             return;
           }
 
-
           if (response.found) {
+            let html = "";
+            for (let i = 0; i < response.results.length; i++) {
+              const result = response.results[i];
+              html += "<div class='match-card'>";
+              html += "<div class='route-title'>Route: " + result.route + "</div>";
+              html += "<div class='team-text'>Team: <strong>" + (result.team || "Not Assigned") + "</strong></div>";
+              html += "<div class='team-text'>Survey Data: <strong>" + result.surveyData + "</strong></div>";
+              html += "<div class='team-text'>KMZ Data: <strong>" + result.kmzData + "</strong></div>";
 
-            var html = "";
-
-
-            for (
-              var i = 0;
-              i < response.results.length;
-              i++
-            ) {
-
-              var result =
-                response.results[i];
-
-
-              html +=
-                "<div class='match-card'>";
-
-
-              html +=
-                "<div class='route-title'>" +
-                "Route: " +
-                result.route +
-                "</div>";
-
-
-              if (
-                result.team &&
-                result.team !== ""
-              ) {
-
-                html +=
-                  "<div class='team-text'>" +
-                  "Team: <strong>" +
-                  result.team +
-                  "</strong>" +
-                  "</div>";
-
+              if (result.status === "Done") {
+                html += "<div class='status-done'>Status: Done</div>";
               } else {
-
-                html +=
-                  "<div class='team-text'>" +
-                  "Team: <em>Not Assigned</em>" +
-                  "</div>";
+                html += "<div class='status-survey'>Status: Need to Submit</div>";
               }
-
-
-              html +=
-                "<div class='team-text'>" +
-                "Survey Data: <strong>" +
-                result.surveyData +
-                "</strong>" +
-                "</div>";
-
-
-              html +=
-                "<div class='team-text'>" +
-                "KMZ Data: <strong>" +
-                result.kmzData +
-                "</strong>" +
-                "</div>";
-
-
-              if (
-                result.status === "Done"
-              ) {
-
-                html +=
-                  "<div class='status-done'>" +
-                  "Status: Done" +
-                  "</div>";
-
-              } else {
-
-                html +=
-                  "<div class='status-survey'>" +
-                  "Status: Need to Submit" +
-                  "</div>";
-              }
-
-
-              html +=
-                "</div>";
+              html += "</div>";
             }
-
-
-            resultArea.innerHTML =
-              html;
-
+            resultArea.innerHTML = html;
           } else {
-
-            resultArea.innerHTML =
-              "<div class='alert-text'>" +
-              response.message +
-              "</div>";
+            resultArea.innerHTML = "<div class='alert-text'>" + response.message + "</div>";
           }
-
         } catch (error) {
-
           console.error(error);
-
-          resultArea.innerHTML =
-            "<div class='alert-text'>" +
-            "Unable to connect to server." +
-            "</div>";
+          resultArea.innerHTML = "<div class='alert-text'>Unable to connect to server.</div>";
         }
       }
-
     </script>
-
   </body>
 </html>
-```
