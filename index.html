@@ -1,0 +1,1338 @@
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WBG NIMS Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+      body { 
+        font-family: 'Roboto', sans-serif; 
+        background-color: #f5f5f6; 
+        display: flex; 
+        justify-content: center; 
+        margin: 40px 0; 
+      }
+
+      .container { 
+        background: #ffffff; 
+        padding: 32px; 
+        border-radius: 8px; 
+        box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 
+                    0px 2px 2px 0px rgba(0,0,0,0.14), 
+                    0px 1px 5px 0px rgba(0,0,0,0.12); 
+        width: 100%; 
+        max-width: 650px; 
+      }
+
+      .hidden { display: none !important; }
+      
+      h2 { 
+        color: #202124; 
+        font-weight: 500; 
+        font-size: 24px; 
+        margin-top: 0; 
+        margin-bottom: 24px; 
+        letter-spacing: 0.2px;
+      }
+
+      .input-label { 
+        font-size: 14px; 
+        color: #5f6368; 
+        font-weight: 500; 
+        margin-bottom: 8px; 
+        display: block; 
+      }
+      
+      .md-input, .md-select { 
+        width: 100%; 
+        padding: 14px 16px; 
+        margin-bottom: 24px; 
+        border: 1px solid #c4c4c4; 
+        border-radius: 4px; 
+        font-size: 16px; 
+        font-family: 'Roboto', sans-serif; 
+        transition: border-color 0.2s; 
+        box-sizing: border-box; 
+        background: white;
+      }
+
+      .md-input:focus, .md-select:focus { 
+        border-color: #1a73e8; 
+        outline: none; 
+        box-shadow: inset 0 0 0 1px #1a73e8; 
+      }
+      
+      .md-button { 
+        background-color: #1a73e8; 
+        color: #ffffff; 
+        border: none; 
+        border-radius: 4px; 
+        padding: 12px 24px; 
+        font-size: 14px; 
+        font-weight: 500; 
+        text-transform: uppercase; 
+        cursor: pointer; 
+        letter-spacing: 0.5px; 
+        box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 
+                    0px 2px 2px 0px rgba(0,0,0,0.14), 
+                    0px 1px 5px 0px rgba(0,0,0,0.12); 
+        transition: background-color 0.2s, box-shadow 0.2s; 
+        width: 100%; 
+        box-sizing: border-box; 
+      }
+
+      .md-button:hover { 
+        background-color: #1557b0; 
+        box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2), 
+                    0px 4px 5px 0px rgba(0,0,0,0.14), 
+                    0px 1px 10px 0px rgba(0,0,0,0.12); 
+      }
+      
+      /* Dashboard Banner & Actions */
+      .update-banner {
+        background-color: #e8f0fe;
+        color: #1a73e8;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .banner-text { 
+        display: flex; 
+        align-items: center; 
+      }
+
+      .banner-text span { 
+        margin-right: 8px; 
+        font-size: 18px; 
+      }
+      
+      .banner-actions { 
+        display: flex; 
+        gap: 8px; 
+      }
+
+      .icon-btn {
+        background: #ffffff; 
+        color: #1a73e8; 
+        border: 1px solid #1a73e8;
+        border-radius: 4px; 
+        padding: 6px 12px; 
+        font-size: 12px; 
+        font-weight: 500;
+        cursor: pointer; 
+        transition: background 0.2s; 
+        white-space: nowrap;
+      }
+
+      .icon-btn:hover { 
+        background: #d2e3fc; 
+      }
+
+      .logout-btn { 
+        color: #d93025; 
+        border-color: #d93025; 
+      }
+
+      .logout-btn:hover { 
+        background: #fce8e6; 
+      }
+
+      /* Summary Boxes */
+      .summary-box { 
+        display: flex; 
+        justify-content: space-around; 
+        background: #ffffff; 
+        padding: 16px; 
+        border-radius: 8px; 
+        margin-bottom: 24px; 
+        border: 1px solid #e0e0e0; 
+        box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.05); 
+      }
+
+      .sum-item { 
+        text-align: center; 
+      }
+
+      .sum-item strong { 
+        font-size: 12px; 
+        color: #5f6368; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+        font-weight: 500;
+      }
+
+      .sum-item span { 
+        display: block; 
+        font-size: 24px; 
+        font-weight: 400; 
+        margin-top: 8px; 
+        color: #202124; 
+      }
+      
+      /* Dashboard Table */
+      .dash-table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        margin-bottom: 32px; 
+        font-size: 14px; 
+      }
+
+      .dash-table th, 
+      .dash-table td { 
+        padding: 16px 0; 
+        border-bottom: 1px solid #e0e0e0; 
+      }
+
+      .dash-table th { 
+        color: #5f6368; 
+        font-weight: 500; 
+        background-color: #f8f9fa;
+      }
+
+      .dash-table tr:hover { 
+        background-color: #f5f5f5; 
+      }
+      
+      /* Column Alignment */
+      .dash-td-center { 
+        text-align: center !important; 
+      }
+
+      .col-team { 
+        text-align: left; 
+        padding-left: 16px !important; 
+        width: 35%; 
+      }
+
+      .col-total { 
+        text-align: center; 
+        width: 15%; 
+      }
+
+      .col-done { 
+        text-align: center; 
+        width: 15%; 
+      }
+
+      .col-submit { 
+        text-align: center; 
+        width: 20%; 
+      }
+
+      .col-percent { 
+        text-align: center; 
+        width: 15%; 
+        padding-right: 16px !important; 
+      }
+      
+      /* Progress Bar Styles */
+      .progress-container { 
+        width: 100%; 
+        max-width: 60px; 
+        margin: 0 auto; 
+        text-align: center; 
+      }
+
+      .progress-text { 
+        font-size: 14px; 
+        margin-bottom: 4px; 
+      }
+
+      .progress-bar-bg { 
+        background-color: #e0e0e0; 
+        height: 3px; 
+        border-radius: 2px; 
+        width: 100%; 
+        overflow: hidden; 
+      }
+
+      .progress-bar-fill { 
+        background-color: #1a73e8; 
+        height: 100%; 
+        border-radius: 2px; 
+        transition: width 0.5s ease-in-out; 
+      }
+
+      .text-done { 
+        color: #1e8e3e; 
+      }
+
+      .text-survey { 
+        color: #d93025; 
+      }
+
+      .text-blue { 
+        color: #1a73e8; 
+      }
+      
+      /* Result Cards */
+      .result-container { 
+        margin-top: 24px; 
+      }
+
+      .match-card { 
+        background: #ffffff; 
+        border: 1px solid #e0e0e0; 
+        border-radius: 8px; 
+        padding: 16px; 
+        margin-bottom: 12px; 
+        box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.05); 
+      }
+      
+      .route-title { 
+        font-size: 16px; 
+        font-weight: 500; 
+        color: #202124; 
+        margin-bottom: 8px; 
+      }
+
+      .team-text { 
+        color: #5f6368; 
+        font-size: 14px; 
+        margin-bottom: 6px; 
+      }
+
+      .status-done { 
+        color: #1e8e3e; 
+        font-size: 14px; 
+        font-weight: 500; 
+        margin-top: 8px;
+      }
+
+      .status-survey { 
+        color: #d93025; 
+        font-size: 14px; 
+        font-weight: 500; 
+        margin-top: 8px;
+      }
+      
+      .alert-text { 
+        background: #fce8e6; 
+        color: #d93025; 
+        padding: 16px; 
+        border-radius: 8px; 
+        font-weight: 500; 
+      }
+
+      .success-notice { 
+        background: #e6f4ea; 
+        color: #1e8e3e; 
+        padding: 16px; 
+        border-radius: 8px; 
+        font-weight: 500; 
+      }
+
+      .loading { 
+        color: #5f6368; 
+        font-style: italic; 
+        margin-top: 16px; 
+        font-size: 14px; 
+      }
+
+      .section-divider { 
+        border-bottom: 1px solid #e0e0e0; 
+        margin: 32px 0; 
+      }
+      
+      /* Route List, Circle Tick, & Pill */
+      .route-list { 
+        padding-left: 20px; 
+        color: #5f6368; 
+        margin-bottom: 0; 
+      }
+
+      .route-list li { 
+        margin-bottom: 8px; 
+        line-height: 1.5; 
+      }
+
+      .circle-tick { 
+        display: inline-block;
+        background-color: #1e8e3e; 
+        color: #ffffff; 
+        width: 16px;
+        height: 16px; 
+        line-height: 16px; 
+        text-align: center; 
+        border-radius: 50%; 
+        font-size: 10px; 
+        margin-left: 8px; 
+        vertical-align: middle; 
+      }
+
+      .pill-kmz { 
+        display: inline-block;
+        background-color: #e6f4ea; 
+        color: #1e8e3e; 
+        padding: 2px 8px; 
+        border-radius: 12px; 
+        font-size: 11px; 
+        font-weight: bold; 
+        margin-left: 8px; 
+        border: 1px solid #cce8d6;
+        vertical-align: middle; 
+      }
+      
+      /* Footer Styles */
+      .app-footer {
+        text-align: center;
+        margin-top: 32px;
+        padding-top: 16px;
+        border-top: 1px solid #e0e0e0;
+        font-size: 13px;
+        color: #80868b;
+      }
+
+      .app-footer span {
+        color: #1a73e8;
+        font-weight: 500;
+      }
+
+      /* Mobile */
+      @media (max-width: 600px) {
+        body {
+          margin: 15px 0;
+        }
+
+        .container {
+          padding: 20px;
+          max-width: 100%;
+          margin: 0 10px;
+        }
+
+        h2 {
+          font-size: 21px;
+        }
+
+        .summary-box {
+          padding: 12px 6px;
+        }
+
+        .sum-item strong {
+          font-size: 10px;
+        }
+
+        .sum-item span {
+          font-size: 20px;
+        }
+
+        .dash-table {
+          font-size: 12px;
+        }
+
+        .dash-table th,
+        .dash-table td {
+          padding: 12px 3px;
+        }
+
+        .col-team {
+          padding-left: 5px !important;
+        }
+
+        .col-percent {
+          padding-right: 5px !important;
+        }
+
+        .banner-actions {
+          width: 100%;
+        }
+
+        .icon-btn {
+          flex: 1;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <!-- Login Section -->
+      <div id="pinSection">
+
+        <h2>System Login</h2>
+
+        <label class="input-label">
+          Enter Secret PIN
+        </label>
+
+        <input
+          type="password"
+          id="pinInput"
+          class="md-input"
+          placeholder="Enter PIN"
+        >
+
+        <button
+          class="md-button"
+          onclick="checkPin()"
+        >
+          Enter System
+        </button>
+
+        <p
+          id="pinMsg"
+          style="color:#d93025;margin-top:16px;font-size:14px;"
+        ></p>
+
+      </div>
+
+
+      <!-- Main App Content -->
+      <div id="mainAppSection" class="hidden">
+
+        <!-- DASHBOARD -->
+        <h2>WBG NIMS Dashboard</h2>
+
+        <!-- UPDATE BANNER -->
+        <div class="update-banner">
+
+          <div class="banner-text">
+            <span>&#9432;</span>
+            Dashboard data updates every day at 4:00 PM.
+          </div>
+
+          <div class="banner-actions">
+
+            <button
+              class="icon-btn"
+              onclick="refreshDashboard()"
+              title="Refresh Data"
+            >
+              &#x21bb; Refresh
+            </button>
+
+            <button
+              class="icon-btn logout-btn"
+              onclick="logoutSystem()"
+              title="Logout System"
+            >
+              &#x2192; Logout
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div id="dashboardArea">
+          <div class="loading">
+            Loading dashboard metrics...
+          </div>
+        </div>
+
+
+        <div class="section-divider"></div>
+
+
+        <!-- PENDING SURVEY LIST -->
+        <h2>Pending Submissions by Team</h2>
+
+        <label class="input-label">
+          Select Team
+        </label>
+
+        <select
+          id="teamSelect"
+          class="md-select"
+        >
+          <option value="">
+            -- Loading Teams... --
+          </option>
+        </select>
+
+        <button
+          class="md-button"
+          onclick="fetchTeamSurveys()"
+        >
+          View Pending Routes
+        </button>
+
+        <div
+          id="teamSurveyArea"
+          class="result-container"
+        ></div>
+
+
+        <div class="section-divider"></div>
+
+
+        <!-- ROUTE SEARCH -->
+        <h2>Route Search</h2>
+
+        <label class="input-label">
+          Search Route Name
+        </label>
+
+        <input
+          type="text"
+          id="searchInput"
+          class="md-input"
+          placeholder="e.g. 0001 or BGO0006"
+        >
+
+        <button
+          class="md-button"
+          onclick="performSearch()"
+        >
+          Search
+        </button>
+
+        <div
+          id="resultArea"
+          class="result-container"
+        ></div>
+
+      </div>
+
+
+      <!-- Footer -->
+      <div class="app-footer">
+
+        Developed and Designed by
+        <span>Ye Lin Aung</span>
+
+        <br>
+
+        WBG NIMS &copy; 2026
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         API CONNECTION
+         ===================================================== -->
+
+    <script>
+
+      /*
+       * YOUR GOOGLE APPS SCRIPT WEB APP URL
+       *
+       * GitHub Pages
+       *       ↓
+       * Apps Script
+       *       ↓
+       * Google Sheet
+       */
+
+      const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbxv19f9pM0DMh8cnh44YCBoWHdD-xu91OuJM6Cpkpua9PKMvPeUk8eCIeTt7fkaYEAvIQ/exec";
+
+
+      // =====================================================
+      // GET API
+      // =====================================================
+
+      async function apiGet(params) {
+
+        const url = new URL(SCRIPT_URL);
+
+        Object.keys(params).forEach(function(key) {
+
+          url.searchParams.append(
+            key,
+            params[key]
+          );
+
+        });
+
+        const response =
+          await fetch(url.toString(), {
+            method: "GET"
+          });
+
+        if (!response.ok) {
+          throw new Error(
+            "HTTP error: " + response.status
+          );
+        }
+
+        return await response.json();
+      }
+
+
+      // =====================================================
+      // POST API
+      // =====================================================
+
+      async function apiPost(data) {
+
+        const response =
+          await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify(data)
+          });
+
+        if (!response.ok) {
+          throw new Error(
+            "HTTP error: " + response.status
+          );
+        }
+
+        return await response.json();
+      }
+
+
+      // =====================================================
+      // LOGIN
+      // =====================================================
+
+      async function checkPin() {
+
+        var pin =
+          document.getElementById("pinInput").value;
+
+        var pinMsg =
+          document.getElementById("pinMsg");
+
+        if (pin.trim() === "") {
+
+          pinMsg.innerHTML =
+            "Please enter your PIN.";
+
+          return;
+        }
+
+        pinMsg.innerHTML =
+          "Authenticating...";
+
+        try {
+
+          const response =
+            await apiPost({
+              action: "verifyPin",
+              pin: pin
+            });
+
+          if (response.success) {
+
+            document
+              .getElementById("pinSection")
+              .classList.add("hidden");
+
+            document
+              .getElementById("mainAppSection")
+              .classList.remove("hidden");
+
+            loadDashboard();
+
+          } else {
+
+            pinMsg.innerHTML =
+              "Incorrect PIN!";
+          }
+
+        } catch (error) {
+
+          console.error(error);
+
+          pinMsg.innerHTML =
+            "Connection error. Please try again.";
+        }
+      }
+
+
+      // =====================================================
+      // LOGOUT
+      // =====================================================
+
+      function logoutSystem() {
+
+        document
+          .getElementById("mainAppSection")
+          .classList.add("hidden");
+
+        document
+          .getElementById("pinSection")
+          .classList.remove("hidden");
+
+        document
+          .getElementById("pinInput")
+          .value = "";
+
+        document
+          .getElementById("pinMsg")
+          .innerHTML = "";
+
+        document
+          .getElementById("searchInput")
+          .value = "";
+
+        document
+          .getElementById("resultArea")
+          .innerHTML = "";
+
+        document
+          .getElementById("teamSurveyArea")
+          .innerHTML = "";
+      }
+
+
+      // =====================================================
+      // REFRESH DASHBOARD
+      // =====================================================
+
+      function refreshDashboard() {
+
+        document
+          .getElementById("dashboardArea")
+          .innerHTML =
+          "<div class='loading'>" +
+          "Refreshing dashboard data..." +
+          "</div>";
+
+        loadDashboard();
+      }
+
+
+      // =====================================================
+      // DASHBOARD
+      // =====================================================
+
+      async function loadDashboard() {
+
+        try {
+
+          var response =
+            await apiGet({
+              action: "dashboard"
+            });
+
+          var dashArea =
+            document.getElementById(
+              "dashboardArea"
+            );
+
+          var teamDropdown =
+            document.getElementById(
+              "teamSelect"
+            );
+
+
+          if (response.error) {
+
+            dashArea.innerHTML =
+              "<div class='alert-text'>" +
+              response.error +
+              "</div>";
+
+            return;
+          }
+
+
+          if (response.success) {
+
+            var sum =
+              response.summary;
+
+
+            // Summary
+            var html =
+              "<div class='summary-box'>";
+
+
+            html +=
+              "<div class='sum-item'>" +
+              "<strong>Total Routes</strong>" +
+              "<span>" +
+              sum.total +
+              "</span>" +
+              "</div>";
+
+
+            html +=
+              "<div class='sum-item'>" +
+              "<strong>Done</strong>" +
+              "<span class='text-done'>" +
+              sum.done +
+              "</span>" +
+              "</div>";
+
+
+            html +=
+              "<div class='sum-item'>" +
+              "<strong>Need to Submit</strong>" +
+              "<span class='text-survey'>" +
+              sum.survey +
+              "</span>" +
+              "</div>";
+
+
+            html +=
+              "<div class='sum-item'>" +
+              "<strong>Completed</strong>" +
+              "<span class='text-blue'>" +
+              sum.percent +
+              "</span>" +
+              "</div>";
+
+
+            html +=
+              "</div>";
+
+
+            // Table
+            html +=
+              "<table class='dash-table'>";
+
+
+            html +=
+              "<tr>" +
+              "<th class='col-team'>Team</th>" +
+              "<th class='col-total'>Total</th>" +
+              "<th class='col-done'>Done</th>" +
+              "<th class='col-submit'>Need to Submit</th>" +
+              "<th class='col-percent'>%</th>" +
+              "</tr>";
+
+
+            var teamNames =
+              Object.keys(response.data);
+
+            teamNames.sort();
+
+
+            teamDropdown.innerHTML =
+              "<option value=''>" +
+              "-- Choose a Team --" +
+              "</option>";
+
+
+            for (
+              var i = 0;
+              i < teamNames.length;
+              i++
+            ) {
+
+              var team =
+                teamNames[i];
+
+              var teamData =
+                response.data[team];
+
+              var teamPercentStr =
+                teamData.percent;
+
+              var numericPercent =
+                parseFloat(
+                  teamPercentStr
+                ) || 0;
+
+
+              html += "<tr>";
+
+
+              html +=
+                "<td class='col-team'>" +
+                team +
+                "</td>";
+
+
+              html +=
+                "<td class='col-total'>" +
+                teamData.total +
+                "</td>";
+
+
+              html +=
+                "<td class='col-done text-done'>" +
+                teamData.done +
+                "</td>";
+
+
+              html +=
+                "<td class='col-submit text-survey'>" +
+                teamData.survey +
+                "</td>";
+
+
+              html +=
+                "<td class='col-percent'>" +
+
+                "<div class='progress-container'>" +
+
+                "<div class='progress-text'>" +
+                teamPercentStr +
+                "</div>" +
+
+                "<div class='progress-bar-bg'>" +
+
+                "<div " +
+                "class='progress-bar-fill' " +
+                "style='width:" +
+                numericPercent +
+                "%;'>" +
+                "</div>" +
+
+                "</div>" +
+
+                "</div>" +
+
+                "</td>";
+
+
+              html += "</tr>";
+
+
+              teamDropdown.innerHTML +=
+                "<option value='" +
+                team +
+                "'>" +
+                team +
+                "</option>";
+            }
+
+
+            html +=
+              "</table>";
+
+
+            dashArea.innerHTML =
+              html;
+          }
+
+        } catch (error) {
+
+          console.error(error);
+
+          document
+            .getElementById("dashboardArea")
+            .innerHTML =
+            "<div class='alert-text'>" +
+            "Unable to connect to server." +
+            "</div>";
+        }
+      }
+
+
+      // =====================================================
+      // PENDING ROUTES
+      // =====================================================
+
+      async function fetchTeamSurveys() {
+
+        var teamName =
+          document.getElementById(
+            "teamSelect"
+          ).value;
+
+        var surveyArea =
+          document.getElementById(
+            "teamSurveyArea"
+          );
+
+
+        if (teamName === "") {
+
+          surveyArea.innerHTML =
+            "<div class='alert-text'>" +
+            "Please select a team from the dropdown." +
+            "</div>";
+
+          return;
+        }
+
+
+        surveyArea.innerHTML =
+          "<div class='loading'>" +
+          "Fetching pending routes..." +
+          "</div>";
+
+
+        try {
+
+          var response =
+            await apiGet({
+              action: "pending",
+              team: teamName
+            });
+
+
+          if (response.error) {
+
+            surveyArea.innerHTML =
+              "<div class='alert-text'>" +
+              response.error +
+              "</div>";
+
+            return;
+          }
+
+
+          if (response.success) {
+
+            if (
+              response.routes.length === 0
+            ) {
+
+              surveyArea.innerHTML =
+                "<div class='success-notice'>" +
+                "All caught up! No pending routes for " +
+                teamName +
+                "." +
+                "</div>";
+
+            } else {
+
+              var html =
+                "<div class='match-card'>";
+
+
+              html +=
+                "<div class='route-title'>" +
+                "Pending Routes (" +
+                response.routes.length +
+                ")" +
+                "</div>";
+
+
+              html +=
+                "<ul class='route-list'>";
+
+
+              for (
+                var i = 0;
+                i < response.routes.length;
+                i++
+              ) {
+
+                var route =
+                  response.routes[i];
+
+
+                html +=
+                  "<li>" +
+                  route.route;
+
+
+                if (route.hasSurvey) {
+
+                  html +=
+                    "<span " +
+                    "class='circle-tick' " +
+                    "title='Survey Data is Yes'>" +
+                    "&#10004;" +
+                    "</span>";
+                }
+
+
+                if (route.hasKmz) {
+
+                  html +=
+                    "<span " +
+                    "class='pill-kmz' " +
+                    "title='KMZ Data is Yes'>" +
+                    "KMZ" +
+                    "</span>";
+                }
+
+
+                html +=
+                  "</li>";
+              }
+
+
+              html +=
+                "</ul>" +
+                "</div>";
+
+
+              surveyArea.innerHTML =
+                html;
+            }
+          }
+
+        } catch (error) {
+
+          console.error(error);
+
+          surveyArea.innerHTML =
+            "<div class='alert-text'>" +
+            "Unable to connect to server." +
+            "</div>";
+        }
+      }
+
+
+      // =====================================================
+      // ROUTE SEARCH
+      // =====================================================
+
+      async function performSearch() {
+
+        var searchTerm =
+          document.getElementById(
+            "searchInput"
+          ).value;
+
+        var resultArea =
+          document.getElementById(
+            "resultArea"
+          );
+
+
+        if (searchTerm.trim() === "") {
+
+          resultArea.innerHTML =
+            "<div class='alert-text'>" +
+            "Please enter a route name." +
+            "</div>";
+
+          return;
+        }
+
+
+        resultArea.innerHTML =
+          "<div class='loading'>" +
+          "Searching sheet..." +
+          "</div>";
+
+
+        try {
+
+          var response =
+            await apiGet({
+              action: "search",
+              q: searchTerm
+            });
+
+
+          if (response.error) {
+
+            resultArea.innerHTML =
+              "<div class='alert-text'>" +
+              response.error +
+              "</div>";
+
+            return;
+          }
+
+
+          if (response.found) {
+
+            var html = "";
+
+
+            for (
+              var i = 0;
+              i < response.results.length;
+              i++
+            ) {
+
+              var result =
+                response.results[i];
+
+
+              html +=
+                "<div class='match-card'>";
+
+
+              html +=
+                "<div class='route-title'>" +
+                "Route: " +
+                result.route +
+                "</div>";
+
+
+              if (
+                result.team &&
+                result.team !== ""
+              ) {
+
+                html +=
+                  "<div class='team-text'>" +
+                  "Team: <strong>" +
+                  result.team +
+                  "</strong>" +
+                  "</div>";
+
+              } else {
+
+                html +=
+                  "<div class='team-text'>" +
+                  "Team: <em>Not Assigned</em>" +
+                  "</div>";
+              }
+
+
+              html +=
+                "<div class='team-text'>" +
+                "Survey Data: <strong>" +
+                result.surveyData +
+                "</strong>" +
+                "</div>";
+
+
+              html +=
+                "<div class='team-text'>" +
+                "KMZ Data: <strong>" +
+                result.kmzData +
+                "</strong>" +
+                "</div>";
+
+
+              if (
+                result.status === "Done"
+              ) {
+
+                html +=
+                  "<div class='status-done'>" +
+                  "Status: Done" +
+                  "</div>";
+
+              } else {
+
+                html +=
+                  "<div class='status-survey'>" +
+                  "Status: Need to Submit" +
+                  "</div>";
+              }
+
+
+              html +=
+                "</div>";
+            }
+
+
+            resultArea.innerHTML =
+              html;
+
+          } else {
+
+            resultArea.innerHTML =
+              "<div class='alert-text'>" +
+              response.message +
+              "</div>";
+          }
+
+        } catch (error) {
+
+          console.error(error);
+
+          resultArea.innerHTML =
+            "<div class='alert-text'>" +
+            "Unable to connect to server." +
+            "</div>";
+        }
+      }
+
+    </script>
+
+  </body>
+</html>
+```
