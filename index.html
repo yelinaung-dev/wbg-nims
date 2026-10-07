@@ -112,6 +112,32 @@
       
       .app-footer { text-align: center; margin-top: 32px; padding-top: 16px; border-top: 1px solid #e0e0e0; font-size: 13px; color: #80868b; }
       .app-footer span { color: #1a73e8; font-weight: 500; }
+      /* =========================================
+         MOBILE RESPONSIVE FIXES
+         ========================================= */
+      @media (max-width: 600px) {
+        .summary-box {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          row-gap: 20px;
+          padding: 20px 12px;
+        }
+        
+        #dashboardArea {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          padding-bottom: 8px;
+        }
+        .dash-table {
+          min-width: 550px; 
+        }
+        
+        .banner-actions {
+          width: 100%;
+          justify-content: flex-start;
+          margin-top: 8px;
+        }
+      }
     </style>
   </head>
   <body>
