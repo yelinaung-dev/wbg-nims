@@ -52,6 +52,7 @@
         font-size: 14px; font-weight: 500; margin-bottom: 24px; display: flex;
         align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
       }
+      
       .banner-text { display: flex; align-items: center; }
       .banner-text span { margin-right: 8px; font-size: 18px; }
       .banner-actions { display: flex; gap: 8px; }
@@ -73,11 +74,19 @@
       .sum-item strong { font-size: 12px; color: #5f6368; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;}
       .sum-item span { display: block; font-size: 24px; font-weight: 400; margin-top: 8px; color: #202124; }
       
-      /* NEW TABLE WRAPPER FOR SCROLLING */
+      /* Target Card Styles */
+      .target-cards-container { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+      .target-card { flex: 1; min-width: 250px; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+      .target-header { font-weight: 500; font-size: 16px; margin-bottom: 16px; color: #202124; border-bottom: 1px solid #f1f3f4; padding-bottom: 8px; }
+      .target-stats { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+      .pace-alert { background-color: #fff3cd; color: #856404; padding: 8px; border-radius: 4px; font-size: 13px; text-align: center; font-weight: 500; }
+      .pace-success { background-color: #e6f4ea; color: #1e8e3e; padding: 8px; border-radius: 4px; font-size: 13px; text-align: center; font-weight: 500; }
+      .pace-danger { background-color: #fce8e6; color: #d93025; padding: 8px; border-radius: 4px; font-size: 13px; text-align: center; font-weight: 500; }
+
       .table-wrapper {
         width: 100%;
-        overflow-x: auto; /* Enables horizontal scroll */
-        -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; 
         margin-bottom: 32px;
       }
 
@@ -85,8 +94,8 @@
         width: 100%; 
         border-collapse: collapse; 
         font-size: 14px; 
-        min-width: 600px; /* Forces table to stay wide enough */
-        white-space: nowrap; /* PREVENTS TEXT FROM WRAPPING OR SQUISHING */
+        min-width: 600px; 
+        white-space: nowrap; 
       }
       .dash-table th, .dash-table td { padding: 16px 10px; border-bottom: 1px solid #e0e0e0; }
       .dash-table th { color: #5f6368; font-weight: 500; background-color: #f8f9fa;}
@@ -127,9 +136,6 @@
       .app-footer { text-align: center; margin-top: 32px; padding-top: 16px; border-top: 1px solid #e0e0e0; font-size: 13px; color: #80868b; }
       .app-footer span { color: #1a73e8; font-weight: 500; }
 
-      /* =========================================
-         MOBILE RESPONSIVE FIXES
-         ========================================= */
       @media (max-width: 600px) {
         .summary-box {
           display: grid;
@@ -137,7 +143,6 @@
           row-gap: 20px;
           padding: 20px 12px;
         }
-        
         .banner-actions {
           width: 100%;
           justify-content: flex-start;
@@ -203,14 +208,9 @@
     </div> 
 
     <script>
-      // ==========================================
-      // CONFIGURED API URL 
-      // ==========================================
       const API_URL = "https://script.google.com/macros/s/AKfycbyMVf9mkE92mpJDJfL9sC91wxUF6PSE_w2dbHORxmdA9kt98GyyHgm_LDhKsKTjtGQUyA/exec";
-      
-      let sessionPin = ""; // Stores valid PIN securely during active session
+      let sessionPin = ""; 
 
-      // Enable Enter key for inputs
       document.getElementById("pinInput").addEventListener("keypress", function(e) {
         if (e.key === "Enter") { e.preventDefault(); checkPin(); }
       });
@@ -244,7 +244,7 @@
           const data = await response.json();
           
           if (data.success && data.isValid) {
-            sessionPin = pin; // Save PIN to send with future requests
+            sessionPin = pin; 
             document.getElementById("pinSection").classList.add("hidden");
             document.getElementById("mainAppSection").classList.remove("hidden");
             loadDashboard();
@@ -257,7 +257,7 @@
       }
 
       function logoutSystem() {
-        sessionPin = ""; // Clear token
+        sessionPin = ""; 
         document.getElementById("mainAppSection").classList.add("hidden");
         document.getElementById("pinSection").classList.remove("hidden");
         document.getElementById("pinInput").value = "";
@@ -284,13 +284,102 @@
         }
 
         const sum = response.summary;
+        
+        // 1. Build the Summary Box
         let html = "<div class='summary-box'>";
         html += `<div class='sum-item'><strong>Total Routes</strong><span>${sum.total}</span></div>`;
         html += `<div class='sum-item'><strong>Done</strong><span class='text-done'>${sum.done}</span></div>`;
         html += `<div class='sum-item'><strong>Need to Submit</strong><span class='text-survey'>${sum.survey}</span></div>`;
         html += `<div class='sum-item'><strong>Completed</strong><span class='text-blue'>${sum.percent}</span></div></div>`;
 
-        // CHANGED: Added table-wrapper div for horizontal scrolling
+        // 2. Targets & Progress Calculations 
+        const targetOct = 65;
+        const initialDone = 164; // The static baseline snapshot of DONE routes from when tracking started
+        
+        // Dynamic baseline: Calculates the original remaining balance (will be 130)
+        const basePending = sum.total - initialDone; 
+        
+        // Tracks how many routes have been finished since the goal was set (currently 5)
+        let newlyDone = Math.max(0, sum.done - initialDone); 
+        
+        // Oct calculations
+        let octDone = Math.min(newlyDone, targetOct);
+        let octPercent = ((octDone / targetOct) * 100).toFixed(1);
+        let octRemaining = targetOct - octDone;
+
+        // Nov (Final) calculations
+        let novDone = Math.min(newlyDone, basePending);
+        let novPercent = ((novDone / basePending) * 100).toFixed(1);
+        let novRemaining = sum.survey; // Live "Need to Submit"
+
+        // The text display for November Target (dynamically matches the live Need to Submit value)
+        let novTargetDisplay = sum.survey; 
+
+        const today = new Date();
+        const octDate = new Date("2026-10-15T23:59:59");
+        const novDate = new Date("2026-11-15T23:59:59");
+        
+        const daysOct = Math.ceil((octDate - today) / (1000 * 60 * 60 * 24));
+        const daysNov = Math.ceil((novDate - today) / (1000 * 60 * 60 * 24));
+
+        // Create UI string for Oct pace
+        let paceTextOct = "";
+        let paceClassOct = "pace-alert";
+        if (octRemaining === 0) {
+            paceTextOct = "✅ Target Reached!";
+            paceClassOct = "pace-success";
+        } else if (daysOct > 0) {
+            paceTextOct = `Submit <strong>${Math.ceil(octRemaining / daysOct)}</strong> / day (${daysOct} days left)`;
+        } else {
+            paceTextOct = `⚠️ Deadline Passed (${octRemaining} pending)`;
+            paceClassOct = "pace-danger";
+        }
+
+        // Create UI string for Nov (Final) pace
+        let paceTextNov = "";
+        let paceClassNov = "pace-alert";
+        if (novRemaining === 0) {
+            paceTextNov = "✅ All Routes Completed!";
+            paceClassNov = "pace-success";
+        } else if (daysNov > 0) {
+            paceTextNov = `Submit <strong>${Math.ceil(novRemaining / daysNov)}</strong> / day (${daysNov} days left)`;
+        } else {
+            paceTextNov = `⚠️ Deadline Passed (${novRemaining} pending)`;
+            paceClassNov = "pace-danger";
+        }
+
+        // Output Target Cards HTML
+        html += `<div class="target-cards-container">
+                   <!-- OCT TARGET -->
+                   <div class="target-card">
+                      <div class="target-header">15-October Target</div>
+                      <div class="target-stats">
+                         <span style="color:#5f6368;">Target: <strong>${targetOct}</strong></span>
+                         <span style="color:#5f6368;">Finish: <strong style="color:#202124;">${octDone}</strong></span>
+                      </div>
+                      <div style="background-color:rgba(0,0,0,0.08); height:8px; border-radius:4px; margin-bottom: 8px;">
+                         <div style="background-color:#1a73e8; height:100%; border-radius:4px; width:${octPercent}%; transition: width 0.5s ease-in-out;"></div>
+                      </div>
+                      <div style="text-align: right; font-size: 12px; font-weight: 500; color: #1a73e8; margin-bottom: 16px;">${octPercent}% Progress</div>
+                      <div class="${paceClassOct}">${paceTextOct}</div>
+                   </div>
+
+                   <!-- NOV TARGET (FINAL) -->
+                   <div class="target-card">
+                      <div class="target-header">15-November Target</div>
+                      <div class="target-stats">
+                         <span style="color:#5f6368;">Target: <strong>${novTargetDisplay}</strong> <em style="font-size:11px;">(All Remain)</em></span>
+                         <span style="color:#5f6368;">Finish: <strong style="color:#202124;">${novDone}</strong></span>
+                      </div>
+                      <div style="background-color:rgba(0,0,0,0.08); height:8px; border-radius:4px; margin-bottom: 8px;">
+                         <div style="background-color:#1e8e3e; height:100%; border-radius:4px; width:${novPercent}%; transition: width 0.5s ease-in-out;"></div>
+                      </div>
+                      <div style="text-align: right; font-size: 12px; font-weight: 500; color: #1e8e3e; margin-bottom: 16px;">${novPercent}% Progress</div>
+                      <div class="${paceClassNov}">${paceTextNov}</div>
+                   </div>
+                 </div>`;
+
+        // 3. Build the Data Table
         html += "<div class='table-wrapper'><table class='dash-table'>";
         html += "<tr><th class='col-team'>Team</th><th class='col-total'>Total</th><th class='col-done'>Done</th><th class='col-submit'>Need to Submit</th><th class='col-percent'>%</th></tr>";
         
@@ -317,7 +406,7 @@
           teamDropdown.innerHTML += `<option value='${team}'>${team}</option>`;
         });
         
-        html += "</table></div>"; // CHANGED: Closed table-wrapper div
+        html += "</table></div>"; 
         dashArea.innerHTML = html;
       }
 
