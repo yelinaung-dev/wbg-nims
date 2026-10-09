@@ -299,7 +299,7 @@
         // Dynamic baseline: Calculates the original remaining balance (will be 130)
         const basePending = sum.total - initialDone; 
         
-        // Tracks how many routes have been finished since the goal was set (currently 5)
+        // Tracks how many routes have been finished since the goal was set
         let newlyDone = Math.max(0, sum.done - initialDone); 
         
         // Oct calculations
@@ -379,7 +379,7 @@
                    </div>
                  </div>`;
 
-        // 3. Build the Data Table
+        // 3. Build the Data Table (Removed Column AA Label under Team)
         html += "<div class='table-wrapper'><table class='dash-table'>";
         html += "<tr><th class='col-team'>Team</th><th class='col-total'>Total</th><th class='col-done'>Done</th><th class='col-submit'>Need to Submit</th><th class='col-percent'>%</th></tr>";
         
@@ -389,7 +389,7 @@
         teamNames.forEach(team => {
           const tData = response.data[team];
           const numericPercent = parseFloat(tData.percent) || 0;
-          
+
           html += `<tr>
             <td class='col-team'>${team}</td>
             <td class='col-total'>${tData.total}</td>
@@ -435,8 +435,10 @@
             <div class='route-title'>Pending Routes (${response.routes.length})</div>
             <ul class='route-list'>`;
           
+          // Preserved Column AA Label next to Route
           response.routes.forEach(route => {
-            html += `<li>${route.route}`;
+            let aaLabel = route.label ? ` <span style='color:#5f6368; font-size:12px;'>(${route.label})</span>` : "";
+            html += `<li><strong>${route.route}</strong>${aaLabel}`;
             if (route.hasSurvey) html += "<span class='circle-tick' title='Survey Data is Yes'>&#10004;</span>";
             if (route.hasKmz) html += "<span class='pill-kmz' title='KMZ Data is Yes'>KMZ</span>";
             html += "</li>";
@@ -470,9 +472,12 @@
           response.results.forEach(res => {
             let teamLabel = (res.team && res.team !== "") ? `<strong>${res.team}</strong>` : `<em>Not Assigned</em>`;
             let statusBadge = res.status === "Done" ? "<div class='status-done'>Status: Done</div>" : "<div class='status-survey'>Status: Need to Submit</div>";
+            
+            // Preserved Column AA Label next to Route
+            let aaLabel = res.label ? ` <span style='color:#5f6368; font-size:14px; font-weight:normal;'>(${res.label})</span>` : "";
 
             html += `<div class='match-card'>
-              <div class='route-title'>Route: ${res.route}</div>
+              <div class='route-title'>Route: ${res.route}${aaLabel}</div>
               <div class='team-text'>Team: ${teamLabel}</div>
               <div class='team-text'>Survey Data: <strong>${res.surveyData}</strong></div>
               <div class='team-text'>KMZ Data: <strong>${res.kmzData}</strong></div>
